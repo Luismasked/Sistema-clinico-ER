@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>CRUD con Bootstrap</title>
+  <!-- Agrega los enlaces a los archivos de estilo de Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h2 class="mb-4">Lista de Usuarios</h2>
+
+    <!-- Botón para abrir el formulario de creación -->
+    <button class="btn btn-success mb-3" data-toggle="modal" data-target="#createModal">Agregar Usuario</button>
+
+    <!-- Tabla para mostrar datos -->
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí se mostrarán los datos de los usuarios -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Formulario Modal para Crear y Editar -->
+  <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Agregar Usuario</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Aquí va el formulario de creación -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="saveBtn">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agrega los enlaces a los archivos de script de Bootstrap y jQuery (asegúrate de incluir jQuery antes de Bootstrap) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <!-- Tu script personalizado para el CRUD -->
+  <script>
+    // Aquí puedes agregar tu lógica de CRUD utilizando JavaScript/jQuery
+    $(document).ready(function () {
+      // Ejemplo de cómo agregar filas a la tabla (puedes hacerlo dinámicamente después de una operación CRUD)
+      function addTableRow(id, nombre, email) {
+        var row = `<tr>
+                      <td>${id}</td>
+                      <td>${nombre}</td>
+                      <td>${email}</td>
+                      <td>
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#createModal" data-id="${id}" data-nombre="${nombre}" data-email="${email}" onclick="editUser(this)">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(this)">Eliminar</button>
+                      </td>
+                    </tr>`;
+        $("tbody").append(row);
+      }
+
+      // Ejemplo de cómo cargar datos iniciales (puedes obtener estos datos de una base de datos)
+      var initialData = [
+        { id: 1, nombre: "Usuario 1", email: "usuario1@example.com" },
+        { id: 2, nombre: "Usuario 2", email: "usuario2@example.com" },
+        // ... Puedes agregar más datos según sea necesario
+      ];
+
+      // Cargar datos iniciales en la tabla
+      $.each(initialData, function (index, user) {
+        addTableRow(user.id, user.nombre, user.email);
+      });
+
+      // Función para abrir el formulario de edición
+      window.editUser = function (button) {
+        var id = $(button).data("id");
+        var nombre = $(button).data("nombre");
+        var email = $(button).data("email");
+        $("#createModalLabel").text("Editar Usuario");
+        $("#createModal .modal-body").html(`
+          <input type="hidden" id="editId" value="${id}">
+          <div class="form-group">
+            <label for="editNombre">Nombre:</label>
+            <input type="text" class="form-control" id="editNombre" value="${nombre}" required>
+          </div>
+          <div class="form-group">
+            <label for="editEmail">Email:</label>
+            <input type="email" class="form-control" id="editEmail" value="${email}" required>
+          </div>
+        `);
+      };
+
+      // Función para eliminar usuario (puedes implementar la lógica del lado del servidor)
+      window.deleteUser = function (button) {
+        $(button).closest("tr").remove();
+      };
+
+      // Función para guardar cambios (puedes implementar la lógica del lado del servidor)
+      $("#saveBtn").click(function () {
+        var id = $("#editId").val();
+        var nombre = $("#editNombre").val();
+        var email = $("#editEmail").val();
+
+        // Puedes agregar la lógica para guardar los cambios aquí
+
+        // Ejemplo: Actualizar la fila en la tabla
+        var existingRow = $(`tr:has(td:contains(${id}))`);
+        if (existingRow.length > 0) {
+          existingRow.html(`<td>${id}</td><td>${nombre}</td><td>${email}</td>
+                             <td>
+                               <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#createModal" data-id="${id}" data-nombre="${nombre}" data-email="${email}" onclick="editUser(this)">Editar</button>
+                               <button class="btn btn-danger btn-sm" onclick="deleteUser(this)">Eliminar</button>
+                             </td>`);
+        } else {
+          // Si no existe, agregar una nueva fila
+          addTableRow(id, nombre, email);
+        }
+
+        // Cerrar el modal
+        $("#createModal").modal("hide");
+      });
+    });
+  </script>
+</body>
+</html>
