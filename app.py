@@ -17,7 +17,8 @@ def ingresar():
         email = request.form['email']
         password = request.form['password']
         session['email'] = email
-        return  render_template('prueba.html')
+        return  render_template('vistapacientes.html')
+
 
 
 if __name__ == "__main__":
