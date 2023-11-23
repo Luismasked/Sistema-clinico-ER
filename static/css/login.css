@@ -5,7 +5,9 @@ body {
   .container {
     margin-top: 100px;
   }
-  
+  .navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+  }
   .login-form {
     background-color: #ffffff;
     padding: 30px;
@@ -35,4 +37,9 @@ body {
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
+  }
+  .show-password {
+    margin-left: 5px;
+    cursor: pointer;
+    user-select: none;
   }
