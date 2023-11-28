@@ -73,9 +73,8 @@
                   'username': username,
                   'password': password,
               }),
-          })
-          .then(response => response.json())
-          .then(data => {
+            }.then(response => response.json()) 
+            .then(data => {
               if (data.success) {
                   // Ocultar el contenedor de inicio de sesión
                   //document.getElementById('login-container').style.display = 'none';
@@ -86,7 +85,8 @@
                   alert('Credenciales incorrectas. Intenta de nuevo.');
               }
           })
-          .catch(error => console.error('Error:', error));
-      }
+          .catch(error => console.error('Error:', error))
+      )}
   </script>
+
 {% endblock %}
