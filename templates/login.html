@@ -37,7 +37,7 @@
           <div class="card">
             <div class="card-body">
               <h2 class="text-center mb-4">Iniciar Sesión</h2>
-              <form action="/ingresar" method="post">
+              <form id="login-form">
                 <div class="form-group">
                   <label for="correo">Correo electrónico:</label>
                   <input type="text" id="correo" name="correo" class="form-control" required>
@@ -46,7 +46,7 @@
                   <label for="contraseña">Contraseña:</label>
                   <input type="password" id="contraseña" name="contraseña" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+                <button type="button" class="btn btn-primary btn-block" onclick="login()">Iniciar sesión</button>
                 <hr>
                 <p class="text-center">¿No tienes una cuenta? <a href="/vistaRegistrar">Regístrate</a></p>
                 <p class="text-center"><a href="#">¿Olvidaste tu contraseña? -Aun Falta-</a></p>
@@ -56,4 +56,37 @@
         </div>
       </div>
     </div>
+    
+  
+    <script>
+      function login() {
+          var username = document.getElementById('correo').value;
+          var password = document.getElementById('contraseña').value;
+  
+          // Enviar datos al servidor para la verificación del inicio de sesión
+          fetch('/login2', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams({
+                  'username': username,
+                  'password': password,
+              }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  // Ocultar el contenedor de inicio de sesión
+                  //document.getElementById('login-container').style.display = 'none';
+                  console.log("bienvenidos");
+                  // Mostrar el contenedor de bienvenida
+                  //document.getElementById('welcome-container').style.display = 'block';
+              } else {
+                  alert('Credenciales incorrectas. Intenta de nuevo.');
+              }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+  </script>
 {% endblock %}
