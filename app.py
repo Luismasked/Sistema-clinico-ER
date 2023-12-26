@@ -95,9 +95,8 @@ def registroPaciente():
 @app.route('/vistaRegistrarUsuarioDoctor/')
 def vistaRegistrarUsuarioDoctor():
     return render_template('registroDoctor.html',title="Registrar")
-@app.route('/vistaPrueba/')
-def vistaRegistrarUsuarioDoctor():
-    return render_template('pruebaformulario.html',title="Registrar")
+
+
 
 @app.route('/vistaRegistrarDoctor')
 def vistaRegistrarDoctor():
@@ -135,7 +134,9 @@ def ingresar():
             print("Error no se encontro el usuario")
 
 
-
+@app.route('/login2/')
+def login2():
+    return render_template('pruebaformulario.html',title="Registrar")
 
 if __name__ == "__main__":
     app.run(debug=True)
