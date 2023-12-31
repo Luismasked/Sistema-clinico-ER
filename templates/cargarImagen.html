@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+        
+{% block body %}
+<body class="">
+{% endblock %}
+        
+{% block menu %}
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark ">
+    <a class="navbar-brand" href="/">Sistema Clínico</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav  ml-auto">
+            <li class="nav-item ">
+            <a class="nav-link" href="/vistaPacientes">Pacientes</a>
+        </li>
+        <li class="nav-item table-active">
+            <a class="nav-link" href="/verCargarImagen">Clasificacion</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/">{{usuario}}</a>
+        </li>
+        </ul>
+    </div>
+</nav>
+
+{% endblock %}
+        
+{% block content %}        
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Registrarse</h2>
+                    <form action="/clasificarImagen" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label id = 'img_procesar' for = 'imagen' class = 'psd_btn'>Cargar imagen </label>
+                        <input name = 'imagen' id = 'imagen' type = 'file' accept = '.png, .jpg, .jpeg' required/>
+                    </div>
+                        <br>
+                    <button type="submit" class="btn btn-success btn-block">Clasificar paciente</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
