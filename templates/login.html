@@ -18,7 +18,7 @@
           <div class="card">
             <div class="card-body">
               <h2 class="text-center mb-4">Iniciar Sesión</h2>
-              <form action="/ingresar" method="post">
+              <form id="formulario" action="/ingresar" method="post">
                 <div class="form-group">
                   <label for="correo">Correo electrónico:</label>
                   <input type="text" id="correo" name="correo" class="form-control" required>
@@ -29,8 +29,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
                 <hr>
-              <p class="text-center">¿No tienes una cuenta? <a href="/vistaRegistrarUsuarioDoctor">Regístrate</a></p>
-              <!--<p class="text-center"><a onclick="myFunction()" href="javascript:void(0)">¿Olvidaste tu contraseña? -Aun Falta-</a></p> -->
+              <p class="text-center">¿No tienes una cuenta? <a  href="/vistaRegistrarUsuarioDoctor">Regístrate</a></p>
+              <!-- /vistaRegistrarUsuarioDoctor
+                <p class="text-center"><a onclick="myFunction()" href="javascript:void(0)">¿Olvidaste tu contraseña? -Aun Falta-</a></p> -->
               <p class="text-center"><a  href="/vistaPrueba">¿Olvidaste tu contraseña?</a></p>
                 
               </form>
@@ -39,11 +40,5 @@
         </div>
       </div>
     </div>
-
-    <script>
-      function myFunction() {
-        
-      }
-    </script>
 
 {% endblock %}

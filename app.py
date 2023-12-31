@@ -1,6 +1,6 @@
-from flask import Flask,render_template,redirect,url_for,request,session
+from flask import Flask,render_template,redirect,url_for,request,session, jsonify
 import secrets
-import dao
+import dao, daoUsuario, daoDoctor
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os, glob
@@ -88,19 +88,37 @@ def registroPaciente():
         print(nombre)
         print(genero)
         print(telefono)
-        if(len(dao.registrarUsusarioD(nombre,telefono,genero)) !=0):
+        if(len(daoUsuario.registrarUsusarioD(nombre,telefono,genero)) !=0):
             return redirect(url_for('vistaPacientes'))
     
 
 @app.route('/vistaRegistrarUsuarioDoctor/')
 def vistaRegistrarUsuarioDoctor():
-    return render_template('registroDoctor.html',title="Registrar")
+    return render_template('registroUsuarioDoctor.html',title="Registrar")
 
 
 
 @app.route('/vistaRegistrarDoctor')
 def vistaRegistrarDoctor():
-    return "hola"
+    print (session['id']) 
+    datos = {"id" : session['id']}
+    return render_template('registroDoctor.html',title="Registrar", datos = datos)
+
+@app.route('/registroDoctor',methods=["POST"])
+def registroDoctor():
+    if request.method == "POST":
+        print(request.form)
+        nombre = request.form['nombre']
+        cedula = request.form['cedula']
+        fecha = request.form['fecha']
+        ubicacion = request.form['ubicacion']
+        id = request.form['idUsuario']
+        if(len(daoDoctor.registrarDoctor(nombre,cedula,fecha,ubicacion,id)) !=0):
+            return "Listo"
+        else:
+            return "Error"
+        
+
 
 @app.route('/registroUsuarioDoctor',methods=["POST"])
 def registro():
@@ -109,9 +127,10 @@ def registro():
         telefono = request.form['telefono']
         contraseña = request.form['contraseña']
         password = generate_password_hash(contraseña)
-        if(len(dao.registrarUsusarioD(telefono, correo, password)) !=0):
-            print("ir a registrar Doctor")
-            return redirect(url_for('index'))        
+        if(len(daoUsuario.registrarUsusarioD(telefono, correo, password)) !=0):
+            id = daoUsuario.buscarUsusario(correo)[0]["id"]
+            session['id'] = id
+            return redirect(url_for('vistaRegistrarDoctor'))        
 
 
 @app.route('/ingresar',methods=["GET", "POST"])
@@ -120,10 +139,10 @@ def ingresar():
         try:
             correo = request.form['correo']
             contraseña = request.form['contraseña']
-            contraseñaBD = dao.buscarUsusario(correo)[0]
+            contraseñaBD = daoUsuario.buscarUsusario(correo)[0]
             print(contraseñaBD)
             print(type(contraseñaBD))
-            if(check_password_hash(contraseñaBD['Contraseña'], contraseña)):
+            if(check_password_hash(contraseñaBD['contraseña'], contraseña)):
                 session['correo'] = correo
                 print(session)
                 return redirect(url_for('vistaPacientes'))
@@ -133,10 +152,23 @@ def ingresar():
         except:
             print("Error no se encontro el usuario")
 
-
-@app.route('/login2/')
+"""
+@app.route('/login2/', methods =['POST'])
 def login2():
-    return render_template('pruebaformulario.html',title="Registrar")
-
+    correo = request.form.get('correo')
+    contraseña = request.form.get('contraseña')
+    contraseñaBD = daoUsuario.buscarUsusario(correo)[0]
+    if(check_password_hash(contraseñaBD['Contraseña'], contraseña)):
+        print(contraseñaBD)
+        session['Id'] = contraseñaBD['Id']
+        session['Correo'] = contraseñaBD['Contraseña']
+        session['Tipo'] = contraseñaBD['Tipo']
+        print(session)
+        #return redirect(url_for('vistaPacientes'))
+        return jsonify({'redirect': url_for('vistaPacientes')})
+    else:
+        print("Error no se encontro el usuario")
+        return jsonify ({'mensaje': 'Error, el usuario o contraseña son incorrectas', 'correo': correo, 'contraseña': contraseña})    
+"""
 if __name__ == "__main__":
     app.run(debug=True)
