@@ -1,40 +1,25 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión - Sistema Clínico</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-</head>
-<body class="bg-light vh-100 d-flex align-items-center">
+{% extends 'base.html' %}
 
-<<<<<<< HEAD
-=======
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
 
 {% block body %}
-<body class="">
+  <body class="">
 {% endblock %}
+
 {% block menu %}
-<body class="">
+  <body class="">
 {% endblock %}
 
 {% block content %}
->>>>>>> Salvala
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
           <div class="card">
             <div class="card-body">
               <h2 class="text-center mb-4">Iniciar Sesión</h2>
-<<<<<<< HEAD
-              <form id="login-form">
-=======
-              <form id="formulario" action="/ingresar" method="post">
->>>>>>> Salvala
+              <form action="/ingresarUsuario" method="post">
                 <div class="form-group">
                   <label for="email">Correo electrónico:</label>
                   <input type="text" id="email" name="email" class="form-control" required>
@@ -44,38 +29,20 @@
                   <label for="password">Contraseña:</label>
                   <input type="password" id="password" name="password" class="form-control" required>
                 </div>
-                <button type="button" class="btn btn-primary btn-block" onclick="login()">Iniciar sesión</button>
+                <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                
                 <hr>
-<<<<<<< HEAD
-  
-                <p class="text-center">¿No tienes una cuenta? <a href="#">Regístrate</a></p>
-                <p class="text-center"><a href="#">¿Olvidaste tu contraseña?</a></p>
-=======
+              </form>
               <p class="text-center">¿No tienes una cuenta? <a  href="/vistaRegistrarUsuarioDoctor">Regístrate</a></p>
               <!-- /vistaRegistrarUsuarioDoctor
                 <p class="text-center"><a onclick="myFunction()" href="javascript:void(0)">¿Olvidaste tu contraseña? -Aun Falta-</a></p> -->
               <p class="text-center"><a  href="/vistaPrueba">¿Olvidaste tu contraseña?</a></p>
                 
->>>>>>> Salvala
-              </form>
+              
             </div>
           </div>
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-    
-  
-    <script>
-      function login() {
-          var username = document.getElementById('correo').value;
-          var password = document.getElementById('contraseña').value;
-        console.log("hol");
-          
-      }
-  </script>
-{% endblock %}
-=======
 
 {% endblock %}
->>>>>>> Salvala

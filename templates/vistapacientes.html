@@ -64,7 +64,7 @@
                 <td>{{paciente['Genero']}}</td>
                 <td>{{paciente['Telefono']}}</td>
                 <td><a href='/actualizarPaciente/{{paciente["Id"]}}' class="btn btn-primary ">editar</a></td>
-                <td><a onclick="confirmaBorrar({{paciente['Id']}})" class="btn btn-danger text-white">elimnar</a></button></td>
+                <td><a onclick="confirmaBorrar()" class="btn btn-danger text-white">elimnar</a></button></td>
             </tr>
             {% endfor %}
                 </tbody>
