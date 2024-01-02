@@ -26,8 +26,12 @@ def index():
 def vistaPacientes():
     if 'correo' in session:
         listapacientes = dao.buscarPaciente("*")
+        datos = {
+            "listapacientes" : listapacientes,
+            "nombre" : session['nombre']
+                }
         #poner codigo para poner los pacientes
-        return render_template('vistapacientes.html',title="Pacientes", usuario = session['correo'], pacientes = listapacientes)
+        return render_template('vistapacientes.html',title="Pacientes", datos = datos)
     else:
         return redirect(url_for('index'))
 
@@ -100,8 +104,14 @@ def vistaRegistrarUsuarioDoctor():
 
 @app.route('/vistaRegistrarDoctor')
 def vistaRegistrarDoctor():
-    print (session['id']) 
-    datos = {"id" : session['id']}
+    print(session)
+    if 'error' in session:
+        datos = {
+            "id" : session['idUsusarioDoctor'],
+            "error" : session['error']
+                }
+    else:
+        datos = {"id" : session['idUsusarioDoctor']}
     return render_template('registroDoctor.html',title="Registrar", datos = datos)
 
 @app.route('/registroDoctor',methods=["POST"])
@@ -114,7 +124,7 @@ def registroDoctor():
         ubicacion = request.form['ubicacion']
         id = request.form['idUsuario']
         if(len(daoDoctor.registrarDoctor(nombre,cedula,fecha,ubicacion,id)) !=0):
-            return "Listo"
+            return redirect(url_for('index'))
         else:
             return "Error"
         
@@ -129,28 +139,39 @@ def registro():
         password = generate_password_hash(contraseña)
         if(len(daoUsuario.registrarUsusarioD(telefono, correo, password)) !=0):
             id = daoUsuario.buscarUsusario(correo)[0]["id"]
-            session['id'] = id
+            session['idUsusarioDoctor'] = id
             return redirect(url_for('vistaRegistrarDoctor'))        
 
 
-@app.route('/ingresar',methods=["GET", "POST"])
-def ingresar():     
+@app.route('/ingresarUsuario', methods=["POST"])
+def ingresarUsuario():
+    
     if request.method == "POST":
         try:
-            correo = request.form['correo']
-            contraseña = request.form['contraseña']
+            correo = request.form['email']
+            contraseña = request.form['password']
             contraseñaBD = daoUsuario.buscarUsusario(correo)[0]
             print(contraseñaBD)
             print(type(contraseñaBD))
             if(check_password_hash(contraseñaBD['contraseña'], contraseña)):
-                session['correo'] = correo
-                print(session)
-                return redirect(url_for('vistaPacientes'))
+                doctor = daoDoctor.buscarDoctorPorCorreoUsuario(correo)
+                if(len(doctor) !=0):
+                    session['correo'] = correo
+                    session['idDoctor'] = doctor[0]['id']
+                    session['nombre'] = doctor[0]['nombre']
+                    return redirect(url_for('vistaPacientes'))
+                else:
+                    session['idUsusarioDoctor'] = contraseñaBD['id']
+                    session['error'] = "Falta registrar los datos del doctor"
+                    return redirect(url_for('vistaRegistrarDoctor'))
             else:
-                print("Error no se encontro el usuario")
+                print("IF Error no se encontro el usuario")
                 return  render_template('login.html',title="Error")
         except:
-            print("Error no se encontro el usuario")
+            print("Try Error no se encontro el usuario")
+            return  render_template('login.html',title="Error")
+    else:
+        return  render_template('login.html',title="Error")
 
 """
 @app.route('/login2/', methods =['POST'])
@@ -171,4 +192,4 @@ def login2():
         return jsonify ({'mensaje': 'Error, el usuario o contraseña son incorrectas', 'correo': correo, 'contraseña': contraseña})    
 """
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

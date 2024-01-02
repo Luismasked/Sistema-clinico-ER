@@ -12,3 +12,15 @@ def registrarDoctor(nombre, cedula, fecha, ubicacion, idUsuario):
     except pymysql.Error as error:
         print("Error al conectar a la base de datos"+ error)
         return error
+
+def buscarDoctorPorCorreoUsuario(correo):
+    try:    
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT * FROM doctores WHERE idUsuario = (SELECT id FROM usuario WHERE correo = %s)",(correo))
+            info = cursor.fetchall()
+        conexion.close()
+        return info
+    except pymysql.Error as error:
+        print("Error al conectar a la base de datos"+ error)
+        return None

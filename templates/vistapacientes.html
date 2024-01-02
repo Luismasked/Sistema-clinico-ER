@@ -23,7 +23,7 @@
             <a class="nav-link" href="/verCargarImagen">Clasificacion</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/">{{usuario}}</a>
+            <a class="nav-link" href="/">{{datos['nombre']}}</a>
         </li>
         </ul>
     </div>
@@ -31,6 +31,7 @@
 {% endblock %}
 
 {% block content %}
+{{datos}}
 <div class="conteiner">
     <div class="row">
         <div class="col-12">
@@ -57,14 +58,14 @@
                 </thead>
                 <tbody>
                 
-                {% for paciente in pacientes %}
+                {% for paciente in datos["listapacientes"] %}
                 <tr>
-                <th scope="row">{{paciente['Id']}}</th>
-                <td>{{paciente['Nombre']}}</td>
-                <td>{{paciente['Genero']}}</td>
-                <td>{{paciente['Telefono']}}</td>
-                <td><a href='/actualizarPaciente/{{paciente["Id"]}}' class="btn btn-primary ">editar</a></td>
-                <td><a onclick="confirmaBorrar()" class="btn btn-danger text-white">elimnar</a></button></td>
+                <th scope="row">{{paciente['id']}}</th>
+                <td>{{paciente['nombre']}}</td>
+                <td>{{paciente['genero']}}</td>
+                <td>{{paciente['telefono']}}</td>
+                <td><a href='/actualizarPaciente/{{paciente["id"]}}' class="btn btn-primary ">editar</a></td>
+                <td><a onclick="confirmaBorrar(paciente['id'])" class="btn btn-danger text-white">elimnar</a></button></td>
             </tr>
             {% endfor %}
                 </tbody>

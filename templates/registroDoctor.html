@@ -18,10 +18,16 @@
 
 {% endblock %}
 
-{% block content %}   
 
-  
+{% block content %}
+
 <div class="container">
+    {% if datos['error'] %}
+    <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Info</strong> Aun no has registrado los datos del doctor. 
+    </div>
+    {% endif %} 
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="card">
@@ -57,7 +63,7 @@
             </div>
         </div>
     </div>
-    <p>id Ususario: {{datos['id']}} </p> 
+    
 
     <script type="text/javascript">
         var datepicker, config;

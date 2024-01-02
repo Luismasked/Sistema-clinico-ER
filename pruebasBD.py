@@ -1,4 +1,4 @@
-import dao, daoUsuario
+import dao, daoUsuario, daoDoctor
 from werkzeug.security import generate_password_hash, check_password_hash
 #print(dao.buscarUsusario("luismasked98@gmail.com","1234"))
 #password= "1234"
@@ -11,6 +11,11 @@ try:
 except Exception as e: 
     print("error", e)
 """
-datos = {"dato1" : "hola",
-        "dato2" : "hola 2" }
-print(datos)
+
+resultado = daoDoctor.buscarDoctorPorCorreoUsuario("luismasked98@gmail.com")
+
+if(len(resultado) !=0):
+    print(resultado[0])
+else:
+    print("No hay usuario")
+#print(check_password_hash(resultado[0]['contraseña'], "1234"))
