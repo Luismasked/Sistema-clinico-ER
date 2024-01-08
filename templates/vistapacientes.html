@@ -2,14 +2,22 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 {% endblock %}
 
 {% block body %}
 <body class="">
+    <style>
+        /* Estilos personalizados para ajustar el margen izquierdo del collapse */
+        .navbar-collapse {
+            margin-left: 10px; /* Puedes ajustar este valor según tus necesidades */
+        }
+    </style>
 {% endblock %}
 
 {% block menu %}
-<nav class="navbar navbar-expand-lg bg-primary navbar-dark ">
+<nav class="navbar navbar-expand-md bg-primary navbar-dark ">
     <a class="navbar-brand" href="/">Sistema Clínico</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -22,9 +30,18 @@
         <li class="nav-item">
             <a class="nav-link" href="/verCargarImagen">Clasificacion</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/">{{datos['nombre']}}</a>
-        </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    {{datos['nombre']}}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Ver perfil</a>
+                    <a class="dropdown-item" href="#">Editar perfil</a>
+                    <a class="dropdown-item" href="#">Cerrar sesion</a>
+                </div>
+            </li>
+        
         </ul>
     </div>
 </nav>
@@ -45,7 +62,7 @@
     </div>
     <div class="row"> 
         <div class="col-12">
-            <table class="table table-striped">
+            <table id="tabla-pacientes" class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -60,13 +77,13 @@
                 
                 {% for paciente in datos["listapacientes"] %}
                 <tr>
-                <th scope="row">{{paciente['id']}}</th>
-                <td>{{paciente['nombre']}}</td>
-                <td>{{paciente['genero']}}</td>
-                <td>{{paciente['telefono']}}</td>
-                <td><a href='/actualizarPaciente/{{paciente["id"]}}' class="btn btn-primary ">editar</a></td>
-                <td><a onclick="confirmaBorrar(paciente['id'])" class="btn btn-danger text-white">elimnar</a></button></td>
-            </tr>
+                    <th scope="row">{{paciente['id']}}</th>
+                    <td>{{paciente['nombre']}}</td>
+                    <td>{{paciente['genero']}}</td>
+                    <td>{{paciente['telefono']}}</td>
+                    <td><a href='/actualizarPaciente/{{paciente["id"]}}' class="btn btn-primary ">editar</a></td>
+                    <td><a href='javascript:void(0)' onclick="confirmaBorrar({{paciente['id']}},{{datos['idDoctor']}})" class="btn btn-danger text-white">eliminar</a></td>
+                </tr>
             {% endfor %}
                 </tbody>
             </table>
@@ -75,11 +92,59 @@
 
 </div>
 <script>
-function confirmaBorrar(id){
-    var confirma = confirm("Realmente quieres borrar el registro con el "+id)
-    if(confirm == true){
-        window.location.assign("/borrarPaciente/"+id)
+function confirmaBorrar(idPaciente,idDoctor){
+    
+    var confirma = confirm("Realmente quieres borrar el paciente con el ID: "+idPaciente)
+    
+    
+    if(confirma == true){
+    /*    respuesta = $.post("/cambiarStatusPaciente",{"idPaciente" : idPaciente, "idDoctor": idDoctor}, function(respuesta){
+            
+            console.log(respuesta)
+            
+            var tbody = document.getElementById('table-pacientes').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+})
+
+$.post('/cambiarStatusPaciente', { "idPaciente": idPaciente, "idDoctor": idDoctor }, function(data) {
+                // Actualiza el contenido de la tabla con los nuevos datos
+                console.log(data)
+            })
+            .fail(function(error) {
+                console.error('Error al obtener datos:', error);
+            });
+*/
+// Realiza una solicitud POST con jQuery
+$.post('/cambiarStatusPaciente', { "idPaciente": idPaciente, "idDoctor": idDoctor }, function(data) {
+                // Actualiza el contenido de la tabla con los nuevos datos
+                if(Object.keys(data).length >= 0){
+                
+            
+                //var tbody = document.getElementById('table-pacientes').getElementsByTagName('tbody')[0];
+                //tbody.innerHTML = '';
+                
+                var tbody = $('#tabla-pacientes tbody');
+                tbody.empty();
+                var row;
+                console.log("estoy apunto de menterme al for")
+                for (var i = 0; i < Object.keys(data).length; i++){
+                row = "<tr><td>" + data[i]['id'] + "</td><td>" + data[i]['nombre'] + "</td><td>" + data[i]['genero'] + "</td><td>" + data[i]['telefono'] + "</td><td> <a href='/actualizarPaciente/" + data[i]['id'] + "'class='btn btn-primary'>editar</a></td><td> <a href='javascript:void(0)' onclick='confirmaBorrar(" + data[i]['id'] + ","+ idDoctor +")' class='btn btn-danger text-white' >eliminar</a> </td></tr>";
+                tbody.append(row);    
+                console.log(i)
+                }
+                console.log("afuera del for")
+                }
+                
+            })
+            .fail(function(error) {
+                console.error('Error al obtener datos:', error);
+            });
+        
+        
+        //window.location.assign("/borrarPaciente/"+id)
     }
+    console.log("Afuera del if")
 }
+
 </script>
 {% endblock %}

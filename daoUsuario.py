@@ -5,7 +5,7 @@ def buscarUsusario(correo):
     try:    
         conexion = obtener_conexion()
         with conexion.cursor() as cursor:
-            cursor.execute("SELECT * FROM usuario WHERE correo = %s",(correo))
+            cursor.execute("SELECT * FROM usuario WHERE correo = %s AND status = '1'",(correo))
             info = cursor.fetchall()
         conexion.close()
         return info

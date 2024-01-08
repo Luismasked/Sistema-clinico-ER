@@ -1,4 +1,4 @@
-import dao, daoUsuario, daoDoctor
+import dao, daoUsuario, daoDoctor,daoPacientes
 from werkzeug.security import generate_password_hash, check_password_hash
 #print(dao.buscarUsusario("luismasked98@gmail.com","1234"))
 #password= "1234"
@@ -12,10 +12,10 @@ except Exception as e:
     print("error", e)
 """
 
-resultado = daoDoctor.buscarDoctorPorCorreoUsuario("luismasked98@gmail.com")
-
-if(len(resultado) !=0):
-    print(resultado[0])
+#resultado = daoPacientes.registrarPaciente("Luis Jose Mejia Ramos","7372448796","1998-01-07","hombre","1")
+resultado = daoPacientes.cambiarStatusPaciente("7")
+if(len(resultado) != 0):
+    print(resultado[0]) 
 else:
-    print("No hay usuario")
+    print("No hay pacientes")
 #print(check_password_hash(resultado[0]['contraseña'], "1234"))

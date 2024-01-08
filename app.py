@@ -1,6 +1,6 @@
 from flask import Flask,render_template,redirect,url_for,request,session, jsonify
 import secrets
-import dao, daoUsuario, daoDoctor
+import dao, daoUsuario, daoDoctor, daoPacientes
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os, glob
@@ -25,10 +25,11 @@ def index():
 @app.route('/vistaPacientes')
 def vistaPacientes():
     if 'correo' in session:
-        listapacientes = dao.buscarPaciente("*")
+        listapacientes = daoPacientes.buscarPaciente(session["idDoctor"])
         datos = {
             "listapacientes" : listapacientes,
-            "nombre" : session['nombre']
+            "nombre" : session['nombre'],
+            "idDoctor" : session['idDoctor']
                 }
         #poner codigo para poner los pacientes
         return render_template('vistapacientes.html',title="Pacientes", datos = datos)
@@ -37,7 +38,12 @@ def vistaPacientes():
 
 @app.route('/verRegistroPaciente/')
 def verRegistroPaciente():
-    return render_template('registroPaciente.html',title="Registro Paciente",usuario = session["correo"])
+    print(session)
+    datos = {
+            "idDoctor" : session['idDoctor'],
+            "nombre" : session['nombre']
+                }
+    return render_template('registroPaciente.html',title="Registro Paciente",datos = datos)
 
 @app.route('/verLogin/')
 def verLogin():
@@ -89,12 +95,15 @@ def registroPaciente():
         nombre = request.form['nombre']
         genero = request.form['genero']
         telefono = request.form['telefono']
+        fecha = request.form['fecha']
+        idDoctor = request.form['idDoctor']
         print(nombre)
         print(genero)
         print(telefono)
-        if(len(daoUsuario.registrarUsusarioD(nombre,telefono,genero)) !=0):
+        if(len(daoPacientes.registrarPaciente(nombre,telefono,fecha,genero,idDoctor)) !=0):
             return redirect(url_for('vistaPacientes'))
-    
+        else:
+            return redirect(url_for('verRegistroPaciente'))
 
 @app.route('/vistaRegistrarUsuarioDoctor/')
 def vistaRegistrarUsuarioDoctor():
@@ -107,11 +116,11 @@ def vistaRegistrarDoctor():
     print(session)
     if 'error' in session:
         datos = {
-            "id" : session['idUsusarioDoctor'],
+            "idUsuario" : session['idUsusarioDoctor'],
             "error" : session['error']
                 }
     else:
-        datos = {"id" : session['idUsusarioDoctor']}
+        datos = {"idUsuario" : session['idUsusarioDoctor']}
     return render_template('registroDoctor.html',title="Registrar", datos = datos)
 
 @app.route('/registroDoctor',methods=["POST"])
@@ -128,6 +137,23 @@ def registroDoctor():
         else:
             return "Error"
         
+
+@app.route('/cambiarStatusPaciente',methods=["POST"])
+def cambiarStatusPaciente():
+    if request.method == "POST":
+        
+        idPaciente = request.form['idPaciente']
+        idDoctor = request.form['idDoctor']
+
+        if(len(daoPacientes.cambiarStatusPaciente(idPaciente)) !=0):
+            pacientes = daoPacientes.buscarPaciente(idDoctor)
+            return jsonify(pacientes)
+        else:
+            return jsonify("0")
+        #if(len(daoUsuario.registrarUsusarioD(telefono, correo, password)) !=0):
+        #    id = daoUsuario.buscarUsusario(correo)[0]["id"]
+        #    session['idUsusarioDoctor'] = id
+        #    return redirect(url_for('vistaRegistrarDoctor')) 
 
 
 @app.route('/registroUsuarioDoctor',methods=["POST"])
