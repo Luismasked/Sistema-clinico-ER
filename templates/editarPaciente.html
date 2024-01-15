@@ -15,6 +15,7 @@
 {% endblock %}
         
 {% block menu %}
+
 <nav class="navbar navbar-expand-md bg-primary navbar-dark ">
     <a class="navbar-brand" href="/">Sistema Clínico</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,38 +44,43 @@
         </ul>
     </div>
 </nav>
-
 {% endblock %}
-        
+
 {% block content %}        
+{{datos}}
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="text-center mb-4">Registrarse</h2>
-                    <form action="/registroPaciente" method="post">
+                    <h2 class="text-center mb-4">Editar datos de {{nombre}}</h2>
+                    <form action="/editarPaciente" method="post">
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
-                        <input type="name" id="nombre" name="nombre" class="form-control"required>
+                        <input type="name" value="{{datos['nombre']}}"   id="nombre" name="nombre" class="form-control"required>
                     </div>
                     <div class="form-group">
                         <label for="telefono">Telefono:</label>
-                        <input type="tel" id="telefono" name="telefono" class="form-control" pattern="[0-9]{10}" required>
+                        <input type="tel" id="telefono" value="{{datos['telefono']}}" name="telefono" class="form-control" pattern="[0-9]{10}" required>
                         <small>Formato: 0123456789</small>
                     </div>
                     <div class="form-group">
                         <label for="texto">Fecha de nacimiento :</label>
-                        <input id="fecha"   name="fecha" class="form-control" required>
+                        <input id="fecha" value="{{datos['fechaDeNacimiento']}}"  name="fecha" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label for="sel1">Selecciona el genero:</label>
                         <select class="form-control" id="genero" name="genero">
-                            <option>Hombre</option>
+                        {% if datos['genero'] == 'Hombre' %}
+                            <option selected>Hombre</option>
                             <option>Mujer</option>
+                        {% elif datos['genero'] == 'Mujer'  %}
+                            <option>Hombre</option>
+                            <option selected>Mujer</option>
+                        {% endif %}
                         </select>
                         <br>
-                        <input type="hidden" id="idDoctor" name="idDoctor" value="{{datos['idDoctor']}}" />
+                        <input type="hidden" id="idPaciente" name="idPaciente" value="{{datos['idPaciente']}}" />
                     <button type="submit" class="btn btn-success btn-block">Agregar paciente</button>
                     </form>
                     </div>

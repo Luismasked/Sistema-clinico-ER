@@ -13,9 +13,7 @@ except Exception as e:
 """
 
 #resultado = daoPacientes.registrarPaciente("Luis Jose Mejia Ramos","7372448796","1998-01-07","hombre","1")
-resultado = daoPacientes.cambiarStatusPaciente("7")
-if(len(resultado) != 0):
-    print(resultado[0]) 
-else:
-    print("No hay pacientes")
+resultado = daoPacientes.buscarPaciente(4,8)
+
+print(resultado)
 #print(check_password_hash(resultado[0]['contraseña'], "1234"))

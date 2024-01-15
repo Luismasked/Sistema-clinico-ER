@@ -11,7 +11,7 @@ def buscarPaciente(idDoctor,idPaciente = "*" ):
                 print(idDoctor)
                 cursor.execute("SELECT * FROM pacientes WHERE idDoctor = %s AND status = '1' ",(idDoctor))
             else:
-                cursor.execute("SELECT * FROM pacientes WHERE idDoctor = %s AND idPaciente = %s AND status = '1' ",(idDoctor, idPaciente))
+                cursor.execute("SELECT * FROM pacientes WHERE idDoctor = %s AND id = %s AND status = '1' ",(idDoctor, idPaciente))
             info = cursor.fetchall()
         conexion.close()
         return info
@@ -28,10 +28,24 @@ def registrarPaciente(nombre,telefono,fechaDeNacimiento,genero,idDoctor):
             cursor.execute(sql,(nombre,genero,fechaDeNacimiento,telefono,idDoctor))
             conexion.commit()
         conexion.close()
-        return ['1']
+        return True
     except:
-        return []
-    
+        return False
+
+def editarPaciente(nombre,telefono,fechaDeNacimiento,genero,idPaciente):
+    try: 
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            sql = "UPDATE pacientes SET `nombre`= %s,`genero`= %s,`telefono`= %s, `fechaDeNacimiento`= %s WHERE id =%s"
+            cursor.execute(sql,(nombre,genero,telefono,fechaDeNacimiento,idPaciente))
+            conexion.commit()
+        conexion.close()
+        return True
+    except:
+        return False
+
+
+
 
 def cambiarStatusPaciente(idPaciente):
     try: 

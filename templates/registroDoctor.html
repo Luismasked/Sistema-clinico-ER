@@ -53,8 +53,8 @@
                         <label for="texto">Localidad:</label>
                         <input type="text" id="ubicacion" name="ubicacion" class="form-control" required>
                     </div>
-                    <input type="hidden" id="idUsuario" name="idUsuario" value="{{datos['id']}}" />
-                    
+                    <input type="hidden" id="idUsuario" name="idUsuario" value="{{datos['idUsuario']}}" />
+                    {{datos}}
                     <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
                     
                     </form>
@@ -70,7 +70,7 @@
         config = {
             locale: 'es-es',
             uiLibrary: 'bootstrap4',
-            format: 'yyyy-mm-dd'
+            format: 'dd-mm-yyyy'
         };
         $(document).ready(function () {
             datepicker = $('#fecha').datepicker(config);

@@ -88,6 +88,26 @@ def clasificarImagen():
         print("Confidence Score (Puntualicion de confianza) : %", confidence_score*100)
         return render_template('resultadoClasificacion.html',title="Clasificador",usuario = session["correo"], clase = Clase, puntaje = PC, imagen = rutaimagen)
 
+@app.route('/vistaEditarPaciente/<idPaciente>')
+def vistaEditarPaciente(idPaciente):
+    datosPaciente = daoPacientes.buscarPaciente(session['idDoctor'],idPaciente)[0]
+    datos ={'idDoctor' : datosPaciente['idDoctor'],'idPaciente' : datosPaciente['id'],'nombre' : datosPaciente['nombre'],
+            'genero' : datosPaciente['genero'], 'telefono': datosPaciente['telefono'],'fechaDeNacimiento' : datosPaciente['fechaDeNacimiento']}
+    return render_template('editarPaciente.html',title="Editar paciente", datos = datos)
+
+@app.route('/editarPaciente', methods = ["POST"])
+def editarPaciente():
+    if request.method == "POST":
+        nombre = request.form['nombre']
+        genero = request.form['genero']
+        telefono = request.form['telefono']
+        fechaDeNacimiento = request.form['fecha']
+        idPaciente = request.form['idPaciente']
+        if(daoPacientes.editarPaciente(nombre,telefono,fechaDeNacimiento,genero,idPaciente)):
+            return redirect(url_for('vistaPacientes'))
+        else:
+            return "error al actualizar"
+
 
 @app.route('/registroPaciente',methods=["POST"])
 def registroPaciente():
@@ -100,7 +120,7 @@ def registroPaciente():
         print(nombre)
         print(genero)
         print(telefono)
-        if(len(daoPacientes.registrarPaciente(nombre,telefono,fecha,genero,idDoctor)) !=0):
+        if(daoPacientes.registrarPaciente(nombre,telefono,fecha,genero,idDoctor)):
             return redirect(url_for('vistaPacientes'))
         else:
             return redirect(url_for('verRegistroPaciente'))
@@ -126,12 +146,12 @@ def vistaRegistrarDoctor():
 @app.route('/registroDoctor',methods=["POST"])
 def registroDoctor():
     if request.method == "POST":
-        print(request.form)
         nombre = request.form['nombre']
         cedula = request.form['cedula']
         fecha = request.form['fecha']
         ubicacion = request.form['ubicacion']
         id = request.form['idUsuario']
+        print(id," ",nombre," ",cedula," ",fecha," ",ubicacion)
         if(len(daoDoctor.registrarDoctor(nombre,cedula,fecha,ubicacion,id)) !=0):
             return redirect(url_for('index'))
         else:
@@ -198,6 +218,11 @@ def ingresarUsuario():
             return  render_template('login.html',title="Error")
     else:
         return  render_template('login.html',title="Error")
+
+@app.route("/cerrarSesion")
+def cerrarSesion():
+    session.clear()
+    return redirect(url_for('index'))
 
 """
 @app.route('/login2/', methods =['POST'])
