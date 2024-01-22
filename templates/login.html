@@ -2,6 +2,8 @@
 
 {% block css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 {% endblock %}
 
 {% block body %}
@@ -24,6 +26,7 @@
               <div class="form-group">
                 <label for="email">Correo electrónico:</label>
                 <input type="text" id="email" name="email" class="form-control" required>
+                <p id="texto" style="display: none;" >Texto inicial</p>
               </div>
 
               <div class="form-group">
@@ -44,4 +47,22 @@
       </div>
     </div>
   </div>
+
+
+  <script>
+  $(document).ready(function(){
+    $("#email").blur(function(){
+      let email = $("#email").val();
+      $.ajax({
+        url:'/verificarUsuario',
+        type: 'POST',
+        data: {email : email},
+        success: function(respuesta){
+          $("#texto").text(respuesta).show();
+        }
+      })
+
+    });
+  });
+  </script>
 {% endblock %}

@@ -17,6 +17,7 @@
 {% endblock %}
 
 {% block menu %}
+<!--
 <nav class="navbar navbar-expand-md bg-primary navbar-dark ">
     <a class="navbar-brand" href="/">Sistema Clínico</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +34,7 @@
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                    {{datos['nombre']}}
+                    {{datos['nombreDoctor']}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="#">Ver perfil</a>
@@ -45,20 +46,90 @@
         </ul>
     </div>
 </nav>
+navbar navbar-expand-md bg-primary navbar-dark
+-->
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom" style="z-index: 2000;">
+    <div class="container-fluid">
+        <!-- Logo del menu -->
+        <a class="navbar-brand nav-link" href="#">
+            <img src="{{ url_for('static', filename='img/logo.png')}}" style="width: 31px;" alt="">
+        </a>
+        <!--boton para menu de la pantalla de < 991px -->
+        <button class="navbar-toggler" type="button" data-mdb-collapse-init data-mdb-target="#navbarExample01"
+            aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarExample01">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-primary" href="#">
+                        <i class="fa-solid fa-house"></i>
+                        Inicio
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary" href="#Sobre nosotros">
+                        <i class="fa-solid fa-users"></i>
+                        Sobre nosotros
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-primary" href="#Contactanos">
+                        <i class="fa-solid fa-address-book"></i>
+                        Contactanos
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav d-flex flex-row">
+                <!-- Icons -->
+                <li class="nav-item ">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-mdb-dropdown-init
+                            data-mdb-ripple-init aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                            {{datos['nombreDoctor']}}
+                        </button>
+                        <div class="dropdown-menu" style="width: 320px">
+                            <div class="bg-white rounded shadow-5-strong p-5">
+                                <div class=" mb-4 text-center">
+                                    <h2>Bienvenid@ {{datos['nombreDoctor']}}</h2>
+                                </div>
+                                <button type="submit" class=" btn-lg btn btn-primary btn-block"
+                                        data-mdb-ripple-init>Configuracion </button>
+                                    <br>
+                                    <hr class="m-0" />
+                                    <div class=" py-1 text-center ">
+                                        <div class="row py-3 text-center">
+                                            <a class="btn-lg btn btn-danger" href="/cerrarSesion">Cerrar sesion</a>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
 {% endblock %}
 
 {% block content %}
 
-<div class="container">
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 text-center">
             <h2>Tabla Pacientes</h2>
         </div>
     </div>
 
     <div class="row justify-content-end">
         <div class="col-2  offset-md-10">
-            <a class="btn btn-success" style="margin-bottom:10px;" href="/verRegistroPaciente">Agregar paciente</a>
+            <a class="btn btn-success" style="margin-bottom:10px;" href="/verRegistroPaciente">Agregar</a>
         </div>
     </div>
 
@@ -67,10 +138,11 @@
             <table id="tabla-pacientes" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">id</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Genero</th>
                         <th scope="col">Telefono</th>
+                        <th scope="col">Opcion</th>
                         <th scope="col">Opcion</th>
                         <th scope="col">Opcion</th>
                     </tr>
@@ -83,6 +155,7 @@
                     <td>{{paciente['nombre']}}</td>
                     <td>{{paciente['genero']}}</td>
                     <td>{{paciente['telefono']}}</td>
+                    <td><a href='/vistaDetallesPaciente/{{paciente["id"]}}' class="btn btn-primary ">detalles</a></td>
                     <td><a href='/vistaEditarPaciente/{{paciente["id"]}}' class="btn btn-primary ">editar</a></td>
                     <td><a href='javascript:void(0)' onclick="confirmaBorrar({{paciente['id']}},{{datos['idDoctor']}})" class="btn btn-danger text-white">eliminar</a></td>
                 </tr>
@@ -92,7 +165,7 @@
         </div>
     </div>
 
-</div>
+
 <script>
 function confirmaBorrar(idPaciente,idDoctor){
     var confirma = confirm("Realmente quieres borrar el paciente con el ID: "+idPaciente)

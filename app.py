@@ -20,7 +20,7 @@ def index():
     if 'correo' in session:
         return "<h1>ya tas logeado </h1>" 
     else:
-        return render_template('login.html',title="Inicio-Login")
+        return render_template('index2.html',title="Inicio-Login")
 
 @app.route('/vistaPacientes')
 def vistaPacientes():
@@ -28,9 +28,10 @@ def vistaPacientes():
         listapacientes = daoPacientes.buscarPaciente(session["idDoctor"])
         datos = {
             "listapacientes" : listapacientes,
-            "nombre" : session['nombre'],
+            "nombreDoctor" : session['nombreDoctor'],
             "idDoctor" : session['idDoctor']
                 }
+        print(session)
         #poner codigo para poner los pacientes
         return render_template('vistapacientes.html',title="Pacientes", datos = datos)
     else:
@@ -40,20 +41,23 @@ def vistaPacientes():
 def verRegistroPaciente():
     print(session)
     datos = {
-            "idDoctor" : session['idDoctor'],
-            "nombre" : session['nombre']
+            "nombreDoctor" : session['nombreDoctor'],
+            "idDoctor" : session['idDoctor']
                 }
     return render_template('registroPaciente.html',title="Registro Paciente",datos = datos)
 
 @app.route('/verLogin/')
 def verLogin():
-    return render_template('login.html',title="Login")
+    return redirect(url_for('index'))
 
 
 @app.route('/verCargarImagen/')
 def verCargarImagen():
-    print(session)
-    return render_template('cargarImagen.html',title="Clasificador",usuario = session["correo"])
+    datos = {
+            "nombreDoctor" : session['nombreDoctor'],
+            "idDoctor" : session['idDoctor']
+                }
+    return render_template('cargarImagen.html',title="Clasificador",datos = datos)
 
 @app.route('/clasificarImagen',methods=["POST"])
 def clasificarImagen():
@@ -92,7 +96,8 @@ def clasificarImagen():
 def vistaEditarPaciente(idPaciente):
     datosPaciente = daoPacientes.buscarPaciente(session['idDoctor'],idPaciente)[0]
     datos ={'idDoctor' : datosPaciente['idDoctor'],'idPaciente' : datosPaciente['id'],'nombre' : datosPaciente['nombre'],
-            'genero' : datosPaciente['genero'], 'telefono': datosPaciente['telefono'],'fechaDeNacimiento' : datosPaciente['fechaDeNacimiento']}
+            'genero' : datosPaciente['genero'], 'telefono': datosPaciente['telefono'],'fechaDeNacimiento' : datosPaciente['fechaDeNacimiento'],
+            'nombreDoctor': session['nombreDoctor']}
     return render_template('editarPaciente.html',title="Editar paciente", datos = datos)
 
 @app.route('/editarPaciente', methods = ["POST"])
@@ -137,10 +142,13 @@ def vistaRegistrarDoctor():
     if 'error' in session:
         datos = {
             "idUsuario" : session['idUsusarioDoctor'],
-            "error" : session['error']
+            "error" : session['error'],
+            "nombreDoctor" : session['nombreDoctor'],
+            "idDoctor" : session['idDoctor']
                 }
     else:
-        datos = {"idUsuario" : session['idUsusarioDoctor']}
+        datos = {"nombreDoctor" : session['nombreDoctor'],
+            "idDoctor" : session['idDoctor']}
     return render_template('registroDoctor.html',title="Registrar", datos = datos)
 
 @app.route('/registroDoctor',methods=["POST"])
@@ -156,6 +164,21 @@ def registroDoctor():
             return redirect(url_for('index'))
         else:
             return "Error"
+        
+
+@app.route('/verificarUsuario',methods=["POST"])
+def verificarUsuario():
+    if request.method == "POST":
+        email = request.form['email']
+        try:
+            print(email)
+            if(len(daoDoctor.buscarDoctorPorCorreoUsuario(email)) != 0):
+                
+                return ["El usuario "+ email +" existe", True]
+            else:
+                return ["El usuario "+ email +" no existe", False]
+        except:
+            return ["El usuario "+ email +" no existe", False]
         
 
 @app.route('/cambiarStatusPaciente',methods=["POST"])
@@ -204,7 +227,7 @@ def ingresarUsuario():
                 if(len(doctor) !=0):
                     session['correo'] = correo
                     session['idDoctor'] = doctor[0]['id']
-                    session['nombre'] = doctor[0]['nombre']
+                    session['nombreDoctor'] = doctor[0]['nombre']
                     return redirect(url_for('vistaPacientes'))
                 else:
                     session['idUsusarioDoctor'] = contraseñaBD['id']
